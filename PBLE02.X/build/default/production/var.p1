@@ -1,0 +1,229 @@
+Version 4.0 HI-TECH Software Intermediate Code
+"14 ./ds1307.h
+[; ;./ds1307.h: 14:  void dsInit(void);
+[v _dsInit `(v ~T0 @X0 0 ef ]
+"16 ./var.h
+[; ;./var.h: 16: void setTime(int newTime);
+[v _setTime `(v ~T0 @X0 0 ef1`i ]
+"18
+[; ;./var.h: 18: void setAlarmLevel(int newAlarmLevel);
+[v _setAlarmLevel `(v ~T0 @X0 0 ef1`i ]
+"20 ./ds1307.h
+[; ;./ds1307.h: 20:  int dsReadData(int address);
+[v _dsReadData `(i ~T0 @X0 0 ef1`i ]
+"17
+[; ;./ds1307.h: 17:  int dec2bcd(int value);
+[v _dec2bcd `(i ~T0 @X0 0 ef1`i ]
+"19
+[; ;./ds1307.h: 19:  void dsWriteData(unsigned char value, int address);
+[v _dsWriteData `(v ~T0 @X0 0 ef2`uc`i ]
+"23 ./lcd.h
+[; ;./lcd.h: 23: void lcdCommand(unsigned char cmd);
+[v _lcdCommand `(v ~T0 @X0 0 ef1`uc ]
+"30
+[; ;./lcd.h: 30: void lcdInt(int val);
+[v _lcdInt `(v ~T0 @X0 0 ef1`i ]
+"13 var.c
+[; ;var.c: 13: static char state;
+[v _state `uc ~T0 @X0 1 s ]
+"14
+[; ;var.c: 14: static char language;
+[v _language `uc ~T0 @X0 1 s ]
+"15
+[; ;var.c: 15: static int time;
+[v _time `i ~T0 @X0 1 s ]
+"16
+[; ;var.c: 16: static int alarmLevel;
+[v _alarmLevel `i ~T0 @X0 1 s ]
+"18
+[; ;var.c: 18: void varInit(void) {
+[v _varInit `(v ~T0 @X0 1 ef ]
+{
+[e :U _varInit ]
+[f ]
+"19
+[; ;var.c: 19:     dsInit();
+[e ( _dsInit ..  ]
+"20
+[; ;var.c: 20:     state = 0;
+[e = _state -> -> 0 `i `uc ]
+"21
+[; ;var.c: 21:     setTime(0);
+[e ( _setTime (1 -> 0 `i ]
+"22
+[; ;var.c: 22:     setAlarmLevel(0);
+[e ( _setAlarmLevel (1 -> 0 `i ]
+"23
+[; ;var.c: 23: }
+[e :UE 1 ]
+}
+"26
+[; ;var.c: 26: char getState(void) {
+[v _getState `(uc ~T0 @X0 1 ef ]
+{
+[e :U _getState ]
+[f ]
+"27
+[; ;var.c: 27:     return state;
+[e ) _state ]
+[e $UE 2  ]
+"28
+[; ;var.c: 28: }
+[e :UE 2 ]
+}
+"29
+[; ;var.c: 29: void setState(char newState) {
+[v _setState `(v ~T0 @X0 1 ef1`uc ]
+{
+[e :U _setState ]
+[v _newState `uc ~T0 @X0 1 r1 ]
+[f ]
+"30
+[; ;var.c: 30:     state = newState;
+[e = _state _newState ]
+"31
+[; ;var.c: 31: }
+[e :UE 3 ]
+}
+"33
+[; ;var.c: 33: int getTime(void) {
+[v _getTime `(i ~T0 @X0 1 ef ]
+{
+[e :U _getTime ]
+[f ]
+"34
+[; ;var.c: 34:     unsigned static char a, b;
+[v F50 `uc ~T0 @X0 1 s a ]
+[v F51 `uc ~T0 @X0 1 s b ]
+"35
+[; ;var.c: 35:     a = dsReadData(0x00);
+[e = F50 -> ( _dsReadData (1 -> 0 `i `uc ]
+"36
+[; ;var.c: 36:     b = dsReadData(0x01);
+[e = F51 -> ( _dsReadData (1 -> 1 `i `uc ]
+"37
+[; ;var.c: 37:     return (a<<8) | b;
+[e ) | << -> F50 `i -> 8 `i -> F51 `i ]
+[e $UE 4  ]
+"38
+[; ;var.c: 38: }
+[e :UE 4 ]
+}
+"40
+[; ;var.c: 40: void setTime(int newTime) {
+[v _setTime `(v ~T0 @X0 1 ef1`i ]
+{
+[e :U _setTime ]
+[v _newTime `i ~T0 @X0 1 r1 ]
+[f ]
+"41
+[; ;var.c: 41:     static unsigned char a, b;
+[v F54 `uc ~T0 @X0 1 s a ]
+[v F55 `uc ~T0 @X0 1 s b ]
+"42
+[; ;var.c: 42:     a = (dec2bcd(newTime)>>8) & 0xFF;
+[e = F54 -> & >> ( _dec2bcd (1 _newTime -> 8 `i -> 255 `i `uc ]
+"43
+[; ;var.c: 43:     b = dec2bcd(newTime) & 0xFF;
+[e = F55 -> & ( _dec2bcd (1 _newTime -> 255 `i `uc ]
+"44
+[; ;var.c: 44:     dsWriteData(a, 0x00);
+[e ( _dsWriteData (2 , F54 -> 0 `i ]
+"45
+[; ;var.c: 45:     dsWriteData(b, 0x01);
+[e ( _dsWriteData (2 , F55 -> 1 `i ]
+"46
+[; ;var.c: 46: }
+[e :UE 5 ]
+}
+"49
+[; ;var.c: 49: int getAlarmLevel(void) {
+[v _getAlarmLevel `(i ~T0 @X0 1 ef ]
+{
+[e :U _getAlarmLevel ]
+[f ]
+"50
+[; ;var.c: 50:     unsigned static char a, b;
+[v F57 `uc ~T0 @X0 1 s a ]
+[v F58 `uc ~T0 @X0 1 s b ]
+"51
+[; ;var.c: 51:     a = dsReadData(0x04);
+[e = F57 -> ( _dsReadData (1 -> 4 `i `uc ]
+"52
+[; ;var.c: 52:     b = dsReadData(0x05);
+[e = F58 -> ( _dsReadData (1 -> 5 `i `uc ]
+"53
+[; ;var.c: 53:     lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"54
+[; ;var.c: 54:     lcdInt(a);
+[e ( _lcdInt (1 -> F57 `i ]
+"55
+[; ;var.c: 55:     lcdInt(b);
+[e ( _lcdInt (1 -> F58 `i ]
+"56
+[; ;var.c: 56:     return (a<<8) | b;
+[e ) | << -> F57 `i -> 8 `i -> F58 `i ]
+[e $UE 6  ]
+"57
+[; ;var.c: 57: }
+[e :UE 6 ]
+}
+"58
+[; ;var.c: 58: void setAlarmLevel(int newAlarmLevel) {
+[v _setAlarmLevel `(v ~T0 @X0 1 ef1`i ]
+{
+[e :U _setAlarmLevel ]
+[v _newAlarmLevel `i ~T0 @X0 1 r1 ]
+[f ]
+"59
+[; ;var.c: 59:     static unsigned char a, b;
+[v F61 `uc ~T0 @X0 1 s a ]
+[v F62 `uc ~T0 @X0 1 s b ]
+"60
+[; ;var.c: 60:     a = (newAlarmLevel>>8);
+[e = F61 -> >> _newAlarmLevel -> 8 `i `uc ]
+"61
+[; ;var.c: 61:     b = newAlarmLevel;
+[e = F62 -> _newAlarmLevel `uc ]
+"62
+[; ;var.c: 62:     dsWriteData(a, 0x04);
+[e ( _dsWriteData (2 , F61 -> 4 `i ]
+"63
+[; ;var.c: 63:     dsWriteData(b, 0x05);
+[e ( _dsWriteData (2 , F62 -> 5 `i ]
+"64
+[; ;var.c: 64: }
+[e :UE 7 ]
+}
+"68
+[; ;var.c: 68: char getLanguage(void){
+[v _getLanguage `(uc ~T0 @X0 1 ef ]
+{
+[e :U _getLanguage ]
+[f ]
+"69
+[; ;var.c: 69:     return dsReadData(0x06);
+[e ) -> ( _dsReadData (1 -> 6 `i `uc ]
+[e $UE 8  ]
+"70
+[; ;var.c: 70: }
+[e :UE 8 ]
+}
+"71
+[; ;var.c: 71: void setLanguage(char newLanguage){
+[v _setLanguage `(v ~T0 @X0 1 ef1`uc ]
+{
+[e :U _setLanguage ]
+[v _newLanguage `uc ~T0 @X0 1 r1 ]
+[f ]
+"74
+[; ;var.c: 74:     language = newLanguage%2;
+[e = _language -> % -> _newLanguage `i -> 2 `i `uc ]
+"75
+[; ;var.c: 75:     dsWriteData(language, 0x06);
+[e ( _dsWriteData (2 , -> _language `uc -> 6 `i ]
+"76
+[; ;var.c: 76: }
+[e :UE 9 ]
+}
