@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-  <executable name="dist/default/debug/PBLE02.X.debug.hex">
+  <executable name="dist/default/debug\PBLE02.X.debug.hex">
     <memory name="program">
       <units>bytes</units>
       <length>32768</length>
-      <used>3766</used>
-      <free>29002</free>
+      <used>9177</used>
+      <free>23591</free>
     </memory>
     <memory name="data">
       <units>bytes</units>
       <length>2048</length>
-      <used>45</used>
-      <free>2003</free>
+      <used>148</used>
+      <free>1900</free>
     </memory>
   </executable>
 </project>

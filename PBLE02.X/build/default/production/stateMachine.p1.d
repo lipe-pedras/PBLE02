@@ -5,4 +5,7 @@ stateMachine.h  \
 event.h  \
 output.h  \
 lcd.h  \
-keypad.h 
+keypad.h  \
+serial.h  \
+adc.h  \
+bits.h 

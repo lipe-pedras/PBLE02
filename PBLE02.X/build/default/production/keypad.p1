@@ -648,8 +648,8 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :U 375 ]
 {
 "48
-[; ;keypad.c: 48:         tempo = 10;
-[e = F2994 -> -> 10 `i `uc ]
+[; ;keypad.c: 48:         tempo = 1;
+[e = F2994 -> -> 1 `i `uc ]
 "49
 [; ;keypad.c: 49:         teclaOld = teclaNew;
 [e = F2996 F2995 ]

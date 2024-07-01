@@ -30,6 +30,61 @@ void serialSend(unsigned char c) {
     TXREG = c; //coloca o valor para ser enviado
 }
 
+void serialSendString(const char *str) {
+    while (*str) {
+        serialSend(*str++);
+    }
+}
+
+void intToStr(int value, char *buffer) {
+    int i = 0;
+    int isNegative = 0;
+
+    // Handle 0 explicitly, otherwise empty string is printed for 0
+    if (value == 0) {
+        buffer[i++] = '0';
+        buffer[i] = '\0';
+        return;
+    }
+
+    // Handle negative numbers
+    if (value < 0) {
+        isNegative = 1;
+        value = -value;
+    }
+
+    // Process individual digits
+    while (value != 0) {
+        int digit = value % 10;
+        buffer[i++] = digit + '0';
+        value = value / 10;
+    }
+
+    // If the number was negative, add the negative sign
+    if (isNegative) {
+        buffer[i++] = '-';
+    }
+
+    buffer[i] = '\0'; // Null-terminate the string
+
+    // Reverse the string
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = buffer[start];
+        buffer[start] = buffer[end];
+        buffer[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+void serialSendInt(int value) {
+    char buffer[12]; // Buffer to hold the string representation of the integer
+    intToStr(value, buffer); // Convert the integer to a string
+    serialSendString(buffer); // Send the string
+}
+
 unsigned char serialRead(void) {
     char resp = 0;
 

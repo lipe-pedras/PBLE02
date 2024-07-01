@@ -21,6 +21,9 @@
 	#define SERIAL_H
 
 	void serialSend(unsigned char c);
+    void serialSendString(const char *str);
+    void intToStr(int value, char *buffer);
+    void serialSendInt(int value);
 	unsigned char serialRead(void);
 	void serialInit(void);
 

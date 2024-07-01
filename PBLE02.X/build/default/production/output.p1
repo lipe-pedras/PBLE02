@@ -2,155 +2,460 @@ Version 4.0 HI-TECH Software Intermediate Code
 "27 ./lcd.h
 [; ;./lcd.h: 27: void lcdInit(void);
 [v _lcdInit `(v ~T0 @X0 0 ef ]
-"22 output.c
-[; ;output.c: 22:     if (numTela == STATE_TEMPO) {
-[c E20 0 1 2 3 .. ]
-[n E20 . STATE_ALARME STATE_TEMPO STATE_IDIOMA STATE_FIM  ]
+"25 output.c
+[; ;output.c: 25:     if (numTela == STATE_HOUR) {
+[c E20 0 1 2 3 4 5 6 7 .. ]
+[n E20 . STATE_ALARM_UPPER STATE_ALARM_LOWER STATE_HOUR STATE_MIN STATE_SEC STATE_IDIOMA STATE_OVER_LIMIT STATE_FIM  ]
 "23 ./lcd.h
 [; ;./lcd.h: 23: void lcdCommand(unsigned char cmd);
 [v _lcdCommand `(v ~T0 @X0 0 ef1`uc ]
 "29
 [; ;./lcd.h: 29: void lcdString(char msg[]);
 [v _lcdString `(v ~T0 @X0 0 ef1`*uc ]
+"21 ./var.h
+[; ;./var.h: 21: char getHOUR();
+[v _getHOUR `(uc ~T0 @X0 0 e? ]
+"19
+[; ;./var.h: 19: char getMIN();
+[v _getMIN `(uc ~T0 @X0 0 e? ]
+"17
+[; ;./var.h: 17: char getSEC();
+[v _getSEC `(uc ~T0 @X0 0 e? ]
+"26 ./lcd.h
+[; ;./lcd.h: 26: void lcdData(unsigned char valor);
+[v _lcdData `(v ~T0 @X0 0 ef1`uc ]
 "30
 [; ;./lcd.h: 30: void lcdInt(int val);
 [v _lcdInt `(v ~T0 @X0 0 ef1`i ]
-"15 ./var.h
-[; ;./var.h: 15: int getTime(void);
-[v _getTime `(i ~T0 @X0 0 ef ]
-"19
-[; ;./var.h: 19: char getLanguage(void);
+"25 ./var.h
+[; ;./var.h: 25: int getAlarmUpperLevel(void);
+[v _getAlarmUpperLevel `(i ~T0 @X0 0 ef ]
+"13
+[; ;./var.h: 13: int getLevel(void);
+[v _getLevel `(i ~T0 @X0 0 ef ]
+"23
+[; ;./var.h: 23: int getAlarmLowerLevel(void);
+[v _getAlarmLowerLevel `(i ~T0 @X0 0 ef ]
+"27
+[; ;./var.h: 27: char getLanguage(void);
 [v _getLanguage `(uc ~T0 @X0 0 ef ]
-[v F41 `*uc ~T0 @X0 -> 2 `i t ]
-"10 output.c
-[; ;output.c: 10: static char * msgs[STATE_FIM][2] = {
-[v _msgs `F41 ~T0 @X0 -> 3 `i s ]
+[v F56 `*uc ~T0 @X0 -> 4 `i t ]
+"9 output.c
+[; ;output.c: 9: static char * msgs[STATE_FIM][4] = {
+[v _msgs `F56 ~T0 @X0 -> 7 `i s ]
 [i _msgs
 :U ..
 :U ..
 :s 1C
 :s 2C
-..
-:U ..
 :s 3C
 :s 4C
 ..
 :U ..
 :s 5C
 :s 6C
+:s 7C
+:s 8C
+..
+:U ..
+:s 9C
+:s 10C
+:s 11C
+:s 12C
+..
+:U ..
+:s 13C
+:s 14C
+:s 15C
+:s 16C
+..
+:U ..
+:s 17C
+:s 18C
+:s 19C
+:s 20C
+..
+:U ..
+:s 21C
+:s 22C
+:s 23C
+:s 24C
+..
+:U ..
+:s 25C
+:s 26C
+:s 27C
+:s 28C
 ..
 ..
 ]
-"16
-[; ;output.c: 16: void outputInit(void) {
+"19
+[; ;output.c: 19: void outputInit(void) {
 [v _outputInit `(v ~T0 @X0 1 ef ]
 {
 [e :U _outputInit ]
 [f ]
-"17
-[; ;output.c: 17:     lcdInit();
+"20
+[; ;output.c: 20:     lcdInit();
 [e ( _lcdInit ..  ]
-"18
-[; ;output.c: 18: }
+"21
+[; ;output.c: 21: }
 [e :UE 1 ]
 }
-"20
-[; ;output.c: 20: void outputPrint(int numTela, int idioma) {
+"23
+[; ;output.c: 23: void outputPrint(int numTela, int idioma) {
 [v _outputPrint `(v ~T0 @X0 1 ef2`i`i ]
 {
 [e :U _outputPrint ]
 [v _numTela `i ~T0 @X0 1 r1 ]
 [v _idioma `i ~T0 @X0 1 r2 ]
 [f ]
-"22
-[; ;output.c: 22:     if (numTela == STATE_TEMPO) {
-[e $ ! == _numTela -> . `E20 1 `i 3  ]
-{
-"23
-[; ;output.c: 23:         lcdCommand(0x80);
-[e ( _lcdCommand (1 -> -> 128 `i `uc ]
-"24
-[; ;output.c: 24:         lcdString(msgs[numTela][idioma]);
-[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux `ui `ux ]
 "25
-[; ;output.c: 25:         lcdCommand(0xC0);
-[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+[; ;output.c: 25:     if (numTela == STATE_HOUR) {
+[e $ ! == _numTela -> . `E20 2 `i 3  ]
+{
 "26
-[; ;output.c: 26:         lcdInt(getTime());
-[e ( _lcdInt (1 ( _getTime ..  ]
+[; ;output.c: 26:         lcdCommand(0x80);
+[e ( _lcdCommand (1 -> -> 128 `i `uc ]
 "27
-[; ;output.c: 27:         lcdString("           ");
-[e ( _lcdString (1 :s 7C ]
+[; ;output.c: 27:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
 "28
-[; ;output.c: 28:     }
+[; ;output.c: 28:         lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"29
+[; ;output.c: 29:         char hour, min, sec;
+[v _hour `uc ~T0 @X0 1 a ]
+[v _min `uc ~T0 @X0 1 a ]
+[v _sec `uc ~T0 @X0 1 a ]
+"30
+[; ;output.c: 30:         hour = getHOUR();
+[e = _hour ( _getHOUR ..  ]
+"31
+[; ;output.c: 31:         min = getMIN();
+[e = _min ( _getMIN ..  ]
+"32
+[; ;output.c: 32:         sec = getSEC();
+[e = _sec ( _getSEC ..  ]
+"33
+[; ;output.c: 33:         lcdData((hour / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _hour `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"34
+[; ;output.c: 34:         lcdData(hour % 10 + 48);
+[e ( _lcdData (1 -> + % -> _hour `i -> 10 `i -> 48 `i `uc ]
+"35
+[; ;output.c: 35:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"36
+[; ;output.c: 36:         lcdData((min / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _min `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"37
+[; ;output.c: 37:         lcdData(min % 10 + 48);
+[e ( _lcdData (1 -> + % -> _min `i -> 10 `i -> 48 `i `uc ]
+"38
+[; ;output.c: 38:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"39
+[; ;output.c: 39:         lcdData((sec / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _sec `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"40
+[; ;output.c: 40:         lcdData(sec % 10 + 48);
+[e ( _lcdData (1 -> + % -> _sec `i -> 10 `i -> 48 `i `uc ]
+"41
+[; ;output.c: 41:         lcdString("        ");
+[e ( _lcdString (1 :s 29C ]
+"42
+[; ;output.c: 42:     }
 }
 [e :U 3 ]
-"29
-[; ;output.c: 29:     if (numTela == STATE_ALARME) {
-[e $ ! == _numTela -> . `E20 0 `i 4  ]
+"44
+[; ;output.c: 44:     if (numTela == STATE_MIN) {
+[e $ ! == _numTela -> . `E20 3 `i 4  ]
 {
-"30
-[; ;output.c: 30:         lcdCommand(0x80);
+"45
+[; ;output.c: 45:         lcdCommand(0x80);
 [e ( _lcdCommand (1 -> -> 128 `i `uc ]
-"31
-[; ;output.c: 31:         lcdString(msgs[numTela][idioma]);
-[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux `ui `ux ]
-"32
-[; ;output.c: 32:         lcdCommand(0xC0);
+"46
+[; ;output.c: 46:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"47
+[; ;output.c: 47:         lcdCommand(0xC0);
 [e ( _lcdCommand (1 -> -> 192 `i `uc ]
-"35
-[; ;output.c: 35:     }
+"48
+[; ;output.c: 48:         char hour, min, sec;
+[v _hour `uc ~T0 @X0 1 a ]
+[v _min `uc ~T0 @X0 1 a ]
+[v _sec `uc ~T0 @X0 1 a ]
+"49
+[; ;output.c: 49:         hour = getHOUR();
+[e = _hour ( _getHOUR ..  ]
+"50
+[; ;output.c: 50:         min = getMIN();
+[e = _min ( _getMIN ..  ]
+"51
+[; ;output.c: 51:         sec = getSEC();
+[e = _sec ( _getSEC ..  ]
+"52
+[; ;output.c: 52:         lcdData((hour / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _hour `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"53
+[; ;output.c: 53:         lcdData(hour % 10 + 48);
+[e ( _lcdData (1 -> + % -> _hour `i -> 10 `i -> 48 `i `uc ]
+"54
+[; ;output.c: 54:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"55
+[; ;output.c: 55:         lcdData((min / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _min `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"56
+[; ;output.c: 56:         lcdData(min % 10 + 48);
+[e ( _lcdData (1 -> + % -> _min `i -> 10 `i -> 48 `i `uc ]
+"57
+[; ;output.c: 57:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"58
+[; ;output.c: 58:         lcdData((sec / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _sec `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"59
+[; ;output.c: 59:         lcdData(sec % 10 + 48);
+[e ( _lcdData (1 -> + % -> _sec `i -> 10 `i -> 48 `i `uc ]
+"60
+[; ;output.c: 60:         lcdString("        ");
+[e ( _lcdString (1 :s 30C ]
+"61
+[; ;output.c: 61:     }
 }
 [e :U 4 ]
-"36
-[; ;output.c: 36:     if (numTela == STATE_IDIOMA) {
-[e $ ! == _numTela -> . `E20 2 `i 5  ]
+"63
+[; ;output.c: 63:     if (numTela == STATE_SEC) {
+[e $ ! == _numTela -> . `E20 4 `i 5  ]
 {
-"37
-[; ;output.c: 37:         lcdCommand(0x80);
+"64
+[; ;output.c: 64:         lcdCommand(0x80);
 [e ( _lcdCommand (1 -> -> 128 `i `uc ]
-"38
-[; ;output.c: 38:         lcdString(msgs[numTela][idioma]);
-[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 2 `i `ui `ux `ui `ux ]
-"39
-[; ;output.c: 39:         lcdCommand(0xC0);
+"65
+[; ;output.c: 65:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"66
+[; ;output.c: 66:         lcdCommand(0xC0);
 [e ( _lcdCommand (1 -> -> 192 `i `uc ]
-"40
-[; ;output.c: 40:         if (getLanguage() == 0) {
-[e $ ! == -> ( _getLanguage ..  `i -> 0 `i 6  ]
-{
-"41
-[; ;output.c: 41:             lcdString("Portugues       ");
-[e ( _lcdString (1 :s 8C ]
-"42
-[; ;output.c: 42:         }
-}
-[e :U 6 ]
-"43
-[; ;output.c: 43:         if (getLanguage() == 1) {
-[e $ ! == -> ( _getLanguage ..  `i -> 1 `i 7  ]
-{
-"44
-[; ;output.c: 44:             lcdString("English         ");
-[e ( _lcdString (1 :s 9C ]
-"45
-[; ;output.c: 45:         }
-}
-[e :U 7 ]
-"47
-[; ;output.c: 47:     }
+"67
+[; ;output.c: 67:         char hour, min, sec;
+[v _hour `uc ~T0 @X0 1 a ]
+[v _min `uc ~T0 @X0 1 a ]
+[v _sec `uc ~T0 @X0 1 a ]
+"68
+[; ;output.c: 68:         hour = getHOUR();
+[e = _hour ( _getHOUR ..  ]
+"69
+[; ;output.c: 69:         min = getMIN();
+[e = _min ( _getMIN ..  ]
+"70
+[; ;output.c: 70:         sec = getSEC();
+[e = _sec ( _getSEC ..  ]
+"71
+[; ;output.c: 71:         lcdData((hour / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _hour `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"72
+[; ;output.c: 72:         lcdData(hour % 10 + 48);
+[e ( _lcdData (1 -> + % -> _hour `i -> 10 `i -> 48 `i `uc ]
+"73
+[; ;output.c: 73:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"74
+[; ;output.c: 74:         lcdData((min / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _min `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"75
+[; ;output.c: 75:         lcdData(min % 10 + 48);
+[e ( _lcdData (1 -> + % -> _min `i -> 10 `i -> 48 `i `uc ]
+"76
+[; ;output.c: 76:         lcdData(':');
+[e ( _lcdData (1 -> -> 58 `ui `uc ]
+"77
+[; ;output.c: 77:         lcdData((sec / 10) % 10 + 48);
+[e ( _lcdData (1 -> + % / -> _sec `i -> 10 `i -> 10 `i -> 48 `i `uc ]
+"78
+[; ;output.c: 78:         lcdData(sec % 10 + 48);
+[e ( _lcdData (1 -> + % -> _sec `i -> 10 `i -> 48 `i `uc ]
+"79
+[; ;output.c: 79:         lcdString("        ");
+[e ( _lcdString (1 :s 31C ]
+"80
+[; ;output.c: 80:     }
 }
 [e :U 5 ]
-"49
-[; ;output.c: 49: }
+"82
+[; ;output.c: 82:     if (numTela == STATE_ALARM_UPPER) {
+[e $ ! == _numTela -> . `E20 0 `i 6  ]
+{
+"83
+[; ;output.c: 83:         lcdCommand(0x80);
+[e ( _lcdCommand (1 -> -> 128 `i `uc ]
+"84
+[; ;output.c: 84:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"85
+[; ;output.c: 85:         lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"86
+[; ;output.c: 86:         lcdInt(getAlarmUpperLevel());
+[e ( _lcdInt (1 ( _getAlarmUpperLevel ..  ]
+"87
+[; ;output.c: 87:         lcdString("      ");
+[e ( _lcdString (1 :s 32C ]
+"88
+[; ;output.c: 88:         lcdInt(getLevel());
+[e ( _lcdInt (1 ( _getLevel ..  ]
+"89
+[; ;output.c: 89:     }
+}
+[e :U 6 ]
+"90
+[; ;output.c: 90:     if (numTela == STATE_ALARM_LOWER) {
+[e $ ! == _numTela -> . `E20 1 `i 7  ]
+{
+"91
+[; ;output.c: 91:         lcdCommand(0x80);
+[e ( _lcdCommand (1 -> -> 128 `i `uc ]
+"92
+[; ;output.c: 92:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"93
+[; ;output.c: 93:         lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"94
+[; ;output.c: 94:         lcdInt(getAlarmLowerLevel());
+[e ( _lcdInt (1 ( _getAlarmLowerLevel ..  ]
+"95
+[; ;output.c: 95:         lcdString("      ");
+[e ( _lcdString (1 :s 33C ]
+"96
+[; ;output.c: 96:         lcdInt(getLevel());
+[e ( _lcdInt (1 ( _getLevel ..  ]
+"97
+[; ;output.c: 97:     }
+}
+[e :U 7 ]
+"98
+[; ;output.c: 98:     if (numTela == STATE_IDIOMA) {
+[e $ ! == _numTela -> . `E20 5 `i 8  ]
+{
+"99
+[; ;output.c: 99:         lcdCommand(0x80);
+[e ( _lcdCommand (1 -> -> 128 `i `uc ]
+"100
+[; ;output.c: 100:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"101
+[; ;output.c: 101:         lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"102
+[; ;output.c: 102:         if (getLanguage() == 0) {
+[e $ ! == -> ( _getLanguage ..  `i -> 0 `i 9  ]
+{
+"103
+[; ;output.c: 103:             lcdString("Portugues       ");
+[e ( _lcdString (1 :s 34C ]
+"104
+[; ;output.c: 104:         }
+}
+[e :U 9 ]
+"105
+[; ;output.c: 105:         if (getLanguage() == 1) {
+[e $ ! == -> ( _getLanguage ..  `i -> 1 `i 10  ]
+{
+"106
+[; ;output.c: 106:             lcdString("English         ");
+[e ( _lcdString (1 :s 35C ]
+"107
+[; ;output.c: 107:         }
+}
+[e :U 10 ]
+"108
+[; ;output.c: 108:         if (getLanguage() == 2) {
+[e $ ! == -> ( _getLanguage ..  `i -> 2 `i 11  ]
+{
+"109
+[; ;output.c: 109:             lcdString("Francaise       ");
+[e ( _lcdString (1 :s 36C ]
+"110
+[; ;output.c: 110:         }
+}
+[e :U 11 ]
+"111
+[; ;output.c: 111:         if (getLanguage() == 3) {
+[e $ ! == -> ( _getLanguage ..  `i -> 3 `i 12  ]
+{
+"112
+[; ;output.c: 112:             lcdString("Espanol         ");
+[e ( _lcdString (1 :s 37C ]
+"113
+[; ;output.c: 113:         }
+}
+[e :U 12 ]
+"115
+[; ;output.c: 115:     }
+}
+[e :U 8 ]
+"116
+[; ;output.c: 116:     if (numTela == STATE_OVER_LIMIT) {
+[e $ ! == _numTela -> . `E20 6 `i 13  ]
+{
+"117
+[; ;output.c: 117:         lcdCommand(0x80);
+[e ( _lcdCommand (1 -> -> 128 `i `uc ]
+"118
+[; ;output.c: 118:         lcdString(msgs[numTela][idioma]);
+[e ( _lcdString (1 *U + &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux * -> -> _idioma `ui `ux -> -> # *U &U *U + &U _msgs * -> -> _numTela `ui `ux -> * -> # *U &U *U &U _msgs `ui -> -> 4 `i `ui `ux `ui `ux ]
+"119
+[; ;output.c: 119:         lcdCommand(0xC0);
+[e ( _lcdCommand (1 -> -> 192 `i `uc ]
+"120
+[; ;output.c: 120:         lcdString("                ");
+[e ( _lcdString (1 :s 38C ]
+"121
+[; ;output.c: 121:     }
+}
+[e :U 13 ]
+"123
+[; ;output.c: 123: }
 [e :UE 2 ]
 }
-[a 6C 67 104 97 110 103 101 32 108 97 110 103 117 97 103 101 0 ]
-[a 1C 65 108 116 101 114 97 114 32 97 108 97 114 109 101 32 0 ]
-[a 5C 65 108 116 101 114 97 114 32 105 100 105 111 109 97 32 0 ]
-[a 3C 65 108 116 101 114 97 114 32 116 101 109 112 111 32 32 0 ]
-[a 2C 67 104 97 110 103 101 32 97 108 97 114 109 32 32 32 0 ]
-[a 4C 67 104 97 110 103 101 32 116 105 109 101 32 32 32 32 0 ]
-[a 8C 80 111 114 116 117 103 117 101 115 32 32 32 32 32 32 32 0 ]
-[a 9C 69 110 103 108 105 115 104 32 32 32 32 32 32 32 32 32 0 ]
-[a 7C 32 32 32 32 32 32 32 32 32 32 32 0 ]
+[a 3C 65 108 97 114 109 101 32 115 117 112 101 114 105 101 117 114 0 ]
+[a 7C 65 108 97 114 109 101 32 105 110 102 101 114 105 101 117 114 0 ]
+[a 25C 65 76 65 82 77 69 32 65 67 73 79 78 65 68 79 33 0 ]
+[a 26C 65 76 65 82 77 32 65 67 84 73 86 65 84 69 68 33 0 ]
+[a 28C 65 76 65 82 77 65 32 65 67 84 73 86 65 68 65 33 0 ]
+[a 4C 65 108 97 114 109 97 32 115 117 112 101 114 105 111 114 32 0 ]
+[a 1C 65 108 97 114 109 101 32 83 117 112 101 114 105 111 114 32 0 ]
+[a 8C 65 108 97 114 109 97 32 105 110 102 101 114 105 111 114 32 0 ]
+[a 5C 65 108 97 114 109 101 32 73 110 102 101 114 105 111 114 32 0 ]
+[a 22C 67 104 97 110 103 101 32 108 97 110 103 117 97 103 101 32 0 ]
+[a 19C 67 104 97 110 103 101 114 32 83 69 67 79 78 68 69 32 0 ]
+[a 27C 65 76 65 82 77 69 32 65 67 84 73 86 69 32 33 32 0 ]
+[a 23C 67 104 97 110 103 101 114 32 108 97 110 103 117 101 32 32 0 ]
+[a 21C 65 108 116 101 114 97 114 32 105 100 105 111 109 97 32 32 0 ]
+[a 24C 67 97 109 98 105 97 114 32 105 100 105 111 109 97 32 32 0 ]
+[a 15C 67 104 97 110 103 101 114 32 77 73 78 85 84 69 32 32 0 ]
+[a 9C 65 108 116 101 114 97 114 32 72 79 82 65 83 32 32 32 0 ]
+[a 11C 67 104 97 110 103 101 114 32 72 69 85 82 69 32 32 32 0 ]
+[a 12C 67 97 109 98 105 97 114 32 72 79 82 65 32 32 32 32 0 ]
+[a 6C 76 111 119 101 114 32 65 108 97 114 109 32 32 32 32 32 0 ]
+[a 2C 85 112 112 101 114 32 65 108 97 114 109 32 32 32 32 32 0 ]
+[a 10C 67 104 97 110 103 101 32 72 79 85 82 32 32 32 32 32 0 ]
+[a 13C 65 108 116 101 114 97 114 32 77 73 78 32 32 32 32 32 0 ]
+[a 16C 67 97 109 98 105 97 114 32 77 73 78 32 32 32 32 32 0 ]
+[a 17C 65 108 116 101 114 97 114 32 83 69 71 32 32 32 32 32 0 ]
+[a 20C 67 97 109 98 105 97 114 32 83 69 71 32 32 32 32 32 0 ]
+[a 14C 67 104 97 110 103 101 32 77 73 78 32 32 32 32 32 32 0 ]
+[a 18C 67 104 97 110 103 101 32 83 69 67 32 32 32 32 32 32 0 ]
+[a 34C 80 111 114 116 117 103 117 101 115 32 32 32 32 32 32 32 0 ]
+[a 36C 70 114 97 110 99 97 105 115 101 32 32 32 32 32 32 32 0 ]
+[a 37C 69 115 112 97 110 111 108 32 32 32 32 32 32 32 32 32 0 ]
+[a 35C 69 110 103 108 105 115 104 32 32 32 32 32 32 32 32 32 0 ]
+[a 38C 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 32 0 ]
+[a 29C 32 32 32 32 32 32 32 32 0 ]
+[a 30C 32 32 32 32 32 32 32 32 0 ]
+[a 31C 32 32 32 32 32 32 32 32 0 ]
+[a 32C 32 32 32 32 32 32 0 ]
+[a 33C 32 32 32 32 32 32 0 ]

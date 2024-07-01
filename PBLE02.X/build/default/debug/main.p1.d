@@ -2,6 +2,9 @@ build/default/debug/main.p1:  \
 main.c  \
 config.h  \
 lcd.h  \
-bits.h  \
-i2c.h  \
-ds1307.h 
+keypad.h  \
+event.h  \
+var.h  \
+stateMachine.h  \
+output.h  \
+serial.h 

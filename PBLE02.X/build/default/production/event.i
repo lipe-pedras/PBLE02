@@ -32,12 +32,20 @@ unsigned int eventRead(void);
 # 11 "./var.h"
 void varInit(void);
 
+int getLevel(void);
+void updateLevel(void);
 char getState(void);
 void setState(char newState);
-int getTime(void);
-void setTime(int newTime);
-int getAlarmLevel(void);
-void setAlarmLevel(int newAlarmLevel);
+char getSEC();
+void setSEC(char value);
+char getMIN();
+void setMIN(char value);
+char getHOUR();
+void setHOUR(char value);
+int getAlarmLowerLevel(void);
+void setAlarmLowerLevel(int newAlarmLevel);
+int getAlarmUpperLevel(void);
+void setAlarmUpperLevel(int newAlarmLevel);
 char getLanguage(void);
 void setLanguage(char newLanguage);
 # 3 "event.c" 2
@@ -48,9 +56,18 @@ void setLanguage(char newLanguage);
 # 1 "./serial.h" 1
 # 23 "./serial.h"
  void serialSend(unsigned char c);
+    void serialSendString(const char *str);
+    void intToStr(int value, char *buffer);
+    void serialSendInt(int value);
  unsigned char serialRead(void);
  void serialInit(void);
 # 5 "event.c" 2
+
+# 1 "./output.h" 1
+# 11 "./output.h"
+void outputInit(void);
+void outputPrint(int numTela, int idioma);
+# 6 "event.c" 2
 
 # 1 "C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/PIC18Fxxxx_DFP/1.6.159/xc8\\pic\\include\\proc\\pic18f4550.h" 1 3
 # 44 "C:/Program Files/Microchip/MPLABX/v6.20/packs/Microchip/PIC18Fxxxx_DFP/1.6.159/xc8\\pic\\include\\proc\\pic18f4550.h" 3
@@ -5506,9 +5523,16 @@ extern volatile __bit nW __attribute__((address(0x7E3A)));
 
 
 extern volatile __bit nWRITE __attribute__((address(0x7E3A)));
-# 6 "event.c" 2
+# 7 "event.c" 2
 
 
+int pow10(int expoent) {
+    int result = 1;
+    for (int i = 0; i < expoent; i++) {
+        result *= 10;
+    }
+    return result;
+}
 
 static unsigned int key_ant;
 static char reading_protocol = 0;
@@ -5538,7 +5562,7 @@ unsigned int eventRead(void) {
     key_ant = key;
 
 
-    static unsigned char msg[5];
+    static unsigned char msg[6];
     unsigned char static data;
     data = serialRead();
     if (data != 0) {
@@ -5552,19 +5576,43 @@ unsigned int eventRead(void) {
         if (data == 'p') {
             if (reading_protocol == 0) {
                 reading_protocol = 1;
+                for (char i = 0; i < 6; i++) {
+                    msg[i] = '0';
+                }
             } else {
-                reading_protocol = 0;
-                if (msg[0] == 'T') {
-                    setTime((msg[1] - 48)*10 * 10 * 10 + (msg[2] - 48)*10 * 10 + (msg[3] - 48)*10 + (msg[4] - 48));
+                unsigned int value = 0;
+                for (char i = reading_protocol - 3; i > 0; i--) {
+                    value += (msg[i] - '0') * pow10(reading_protocol - 3 - i);
+                }
+
+                if (msg[0] == 'H') {
+                    setHOUR(value);
+                }
+
+                if (msg[0] == 'M') {
+                    setMIN(value);
+                }
+
+                if (msg[0] == 'S') {
+                    setSEC(value);
                 }
 
                 if (msg[0] == 'L') {
-                    setLanguage((msg[1] - 48)*10 * 10 * 10 + (msg[2] - 48)*10 * 10 + (msg[3] - 48)*10 + (msg[4] - 48) % 2);
+                    setLanguage(value % 4);
                 }
 
                 if (msg[0] == 'A') {
-                    setAlarmLevel((msg[1] - 48)*10 * 10 * 10 + (msg[2] - 48)*10 * 10 + (msg[3] - 48)*10 + (msg[4] - 48));
+                    setAlarmUpperLevel(value);
                 }
+
+                if (msg[0] == 'a') {
+                    setAlarmLowerLevel(value);
+                }
+                static char envio[7];
+                for (char i = 0; i < 6; i++) {
+                    envio[i] = msg[i];
+                }
+                reading_protocol = 0;
             }
         }
     }

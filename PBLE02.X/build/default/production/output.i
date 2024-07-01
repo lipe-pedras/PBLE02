@@ -8,7 +8,7 @@
 # 2 "<built-in>" 2
 # 1 "output.c" 2
 # 1 "./output.h" 1
-# 10 "./output.h"
+# 11 "./output.h"
 void outputInit(void);
 void outputPrint(int numTela, int idioma);
 # 1 "output.c" 2
@@ -28,9 +28,13 @@ void lcdInt(int val);
 # 1 "./stateMachine.h" 1
 # 14 "./stateMachine.h"
 enum {
-    STATE_ALARME,
-    STATE_TEMPO,
+    STATE_ALARM_UPPER,
+    STATE_ALARM_LOWER,
+    STATE_HOUR,
+    STATE_MIN,
+    STATE_SEC,
     STATE_IDIOMA,
+    STATE_OVER_LIMIT,
     STATE_FIM
 };
 
@@ -43,12 +47,20 @@ void smLoop(void);
 # 11 "./var.h"
 void varInit(void);
 
+int getLevel(void);
+void updateLevel(void);
 char getState(void);
 void setState(char newState);
-int getTime(void);
-void setTime(int newTime);
-int getAlarmLevel(void);
-void setAlarmLevel(int newAlarmLevel);
+char getSEC();
+void setSEC(char value);
+char getMIN();
+void setMIN(char value);
+char getHOUR();
+void setHOUR(char value);
+int getAlarmLowerLevel(void);
+void setAlarmLowerLevel(int newAlarmLevel);
+int getAlarmUpperLevel(void);
+void setAlarmUpperLevel(int newAlarmLevel);
 char getLanguage(void);
 void setLanguage(char newLanguage);
 # 4 "output.c" 2
@@ -57,11 +69,14 @@ void setLanguage(char newLanguage);
 
 
 
-
-static char * msgs[STATE_FIM][2] = {
-    {"Alterar alarme ", "Change alarm   "},
-    {"Alterar tempo  ", "Change time    "},
-    {"Alterar idioma ", "Change language"}
+static char * msgs[STATE_FIM][4] = {
+    {"Alarme Superior ", "Upper Alarm     ", "Alarme superieur", "Alarma superior "},
+    {"Alarme Inferior ", "Lower Alarm     ", "Alarme inferieur", "Alarma inferior "},
+    {"Alterar HORAS   ", "Change HOUR     ", "Changer HEURE   ", "Cambiar HORA    "},
+    {"Alterar MIN     ", "Change MIN      ", "Changer MINUTE  ", "Cambiar MIN     "},
+    {"Alterar SEG     ", "Change SEC      ", "Changer SECONDE ", "Cambiar SEG     "},
+    {"Alterar idioma  ", "Change language ", "Changer langue  ", "Cambiar idioma  "},
+    {"ALARME ACIONADO!", "ALARM ACTIVATED!", "ALARME ACTIVE ! ", "ALARMA ACTIVADA!"}
 };
 
 void outputInit(void) {
@@ -70,19 +85,78 @@ void outputInit(void) {
 
 void outputPrint(int numTela, int idioma) {
 
-    if (numTela == STATE_TEMPO) {
+    if (numTela == STATE_HOUR) {
         lcdCommand(0x80);
         lcdString(msgs[numTela][idioma]);
         lcdCommand(0xC0);
-        lcdInt(getTime());
-        lcdString("           ");
+        char hour, min, sec;
+        hour = getHOUR();
+        min = getMIN();
+        sec = getSEC();
+        lcdData((hour / 10) % 10 + 48);
+        lcdData(hour % 10 + 48);
+        lcdData(':');
+        lcdData((min / 10) % 10 + 48);
+        lcdData(min % 10 + 48);
+        lcdData(':');
+        lcdData((sec / 10) % 10 + 48);
+        lcdData(sec % 10 + 48);
+        lcdString("        ");
     }
-    if (numTela == STATE_ALARME) {
+
+    if (numTela == STATE_MIN) {
         lcdCommand(0x80);
         lcdString(msgs[numTela][idioma]);
         lcdCommand(0xC0);
+        char hour, min, sec;
+        hour = getHOUR();
+        min = getMIN();
+        sec = getSEC();
+        lcdData((hour / 10) % 10 + 48);
+        lcdData(hour % 10 + 48);
+        lcdData(':');
+        lcdData((min / 10) % 10 + 48);
+        lcdData(min % 10 + 48);
+        lcdData(':');
+        lcdData((sec / 10) % 10 + 48);
+        lcdData(sec % 10 + 48);
+        lcdString("        ");
+    }
 
+    if (numTela == STATE_SEC) {
+        lcdCommand(0x80);
+        lcdString(msgs[numTela][idioma]);
+        lcdCommand(0xC0);
+        char hour, min, sec;
+        hour = getHOUR();
+        min = getMIN();
+        sec = getSEC();
+        lcdData((hour / 10) % 10 + 48);
+        lcdData(hour % 10 + 48);
+        lcdData(':');
+        lcdData((min / 10) % 10 + 48);
+        lcdData(min % 10 + 48);
+        lcdData(':');
+        lcdData((sec / 10) % 10 + 48);
+        lcdData(sec % 10 + 48);
+        lcdString("        ");
+    }
 
+    if (numTela == STATE_ALARM_UPPER) {
+        lcdCommand(0x80);
+        lcdString(msgs[numTela][idioma]);
+        lcdCommand(0xC0);
+        lcdInt(getAlarmUpperLevel());
+        lcdString("      ");
+        lcdInt(getLevel());
+    }
+    if (numTela == STATE_ALARM_LOWER) {
+        lcdCommand(0x80);
+        lcdString(msgs[numTela][idioma]);
+        lcdCommand(0xC0);
+        lcdInt(getAlarmLowerLevel());
+        lcdString("      ");
+        lcdInt(getLevel());
     }
     if (numTela == STATE_IDIOMA) {
         lcdCommand(0x80);
@@ -94,7 +168,19 @@ void outputPrint(int numTela, int idioma) {
         if (getLanguage() == 1) {
             lcdString("English         ");
         }
+        if (getLanguage() == 2) {
+            lcdString("Francaise       ");
+        }
+        if (getLanguage() == 3) {
+            lcdString("Espanol         ");
+        }
 
+    }
+    if (numTela == STATE_OVER_LIMIT) {
+        lcdCommand(0x80);
+        lcdString(msgs[numTela][idioma]);
+        lcdCommand(0xC0);
+        lcdString("                ");
     }
 
 }

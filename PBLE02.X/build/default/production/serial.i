@@ -11,6 +11,9 @@
 # 1 "./serial.h" 1
 # 23 "./serial.h"
  void serialSend(unsigned char c);
+    void serialSendString(const char *str);
+    void intToStr(int value, char *buffer);
+    void serialSendInt(int value);
  unsigned char serialRead(void);
  void serialInit(void);
 # 20 "serial.c" 2
@@ -4374,6 +4377,61 @@ extern volatile __bit nWRITE __attribute__((address(0x7E3A)));
 void serialSend(unsigned char c) {
     while (!((PIR1) & (1<<4)));
     TXREG = c;
+}
+
+void serialSendString(const char *str) {
+    while (*str) {
+        serialSend(*str++);
+    }
+}
+
+void intToStr(int value, char *buffer) {
+    int i = 0;
+    int isNegative = 0;
+
+
+    if (value == 0) {
+        buffer[i++] = '0';
+        buffer[i] = '\0';
+        return;
+    }
+
+
+    if (value < 0) {
+        isNegative = 1;
+        value = -value;
+    }
+
+
+    while (value != 0) {
+        int digit = value % 10;
+        buffer[i++] = digit + '0';
+        value = value / 10;
+    }
+
+
+    if (isNegative) {
+        buffer[i++] = '-';
+    }
+
+    buffer[i] = '\0';
+
+
+    int start = 0;
+    int end = i - 1;
+    while (start < end) {
+        char temp = buffer[start];
+        buffer[start] = buffer[end];
+        buffer[end] = temp;
+        start++;
+        end--;
+    }
+}
+
+void serialSendInt(int value) {
+    char buffer[12];
+    intToStr(value, buffer);
+    serialSendString(buffer);
 }
 
 unsigned char serialRead(void) {

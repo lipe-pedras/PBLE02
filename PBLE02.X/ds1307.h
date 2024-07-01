@@ -28,7 +28,7 @@
 #define getMonths()   (bcd2dec(dsReadData(MONTH)& 0x3f))
 #define getYears()    (bcd2dec(dsReadData(YEAR)& 0xff))
 
-#define setSeconds(v) (dsWriteData(dec2bcd(v),SEC))
+#define setSeconds(v) (dsWriteData(dec2bcd(v)|0x80,SEC))
 #define setMinutes(v) (dsWriteData(dec2bcd(v),MIN))
 #define setHours(v)   (dsWriteData(dec2bcd(v),HOUR))
 #define setWeekDay(v) (dsWriteData(dec2bcd(v),WEEKDAY))

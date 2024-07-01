@@ -10,12 +10,20 @@
 
 void varInit(void);
 
+int getLevel(void);
+void updateLevel(void);
 char getState(void);
 void setState(char newState);
-int getTime(void);
-void setTime(int newTime);
-int getAlarmLevel(void);
-void setAlarmLevel(int newAlarmLevel);
+char getSEC();
+void setSEC(char value);
+char getMIN();
+void setMIN(char value);
+char getHOUR();
+void setHOUR(char value);
+int getAlarmLowerLevel(void);
+void setAlarmLowerLevel(int newAlarmLevel);
+int getAlarmUpperLevel(void);
+void setAlarmUpperLevel(int newAlarmLevel);
 char getLanguage(void);
 void setLanguage(char newLanguage);
 #endif	/* VAR_H */

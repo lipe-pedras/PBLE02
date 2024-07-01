@@ -1,7 +1,7 @@
 Version 4.0 HI-TECH Software Intermediate Code
 [p mainexit ]
-"25 ./serial.h
-[; ;./serial.h: 25:  void serialInit(void);
+"28 ./serial.h
+[; ;./serial.h: 28:  void serialInit(void);
 [v _serialInit `(v ~T0 @X0 0 ef ]
 "11 ./keypad.h
 [; ;./keypad.h: 11: void kpInit(void);
@@ -15,14 +15,14 @@ Version 4.0 HI-TECH Software Intermediate Code
 "18 ./event.h
 [; ;./event.h: 18: void eventInit(void);
 [v _eventInit `(v ~T0 @X0 0 ef ]
-"10 ./output.h
-[; ;./output.h: 10: void outputInit(void);
+"11 ./output.h
+[; ;./output.h: 11: void outputInit(void);
 [v _outputInit `(v ~T0 @X0 0 ef ]
 "13 ./keypad.h
 [; ;./keypad.h: 13: void kpDebounce(void);
 [v _kpDebounce `(v ~T0 @X0 0 ef ]
-"23 ./stateMachine.h
-[; ;./stateMachine.h: 23: void smLoop(void);
+"27 ./stateMachine.h
+[; ;./stateMachine.h: 27: void smLoop(void);
 [v _smLoop `(v ~T0 @X0 0 ef ]
 "31 ./config.h
 [p x MCLRE=ON                ]
@@ -476,19 +476,19 @@ Version 4.0 HI-TECH Software Intermediate Code
 {
 [e :U 277 ]
 {
-"27
-[; ;main.c: 27:         kpDebounce();
+"26
+[; ;main.c: 26:         kpDebounce();
 [e ( _kpDebounce ..  ]
-"30
-[; ;main.c: 30:         smLoop();
+"29
+[; ;main.c: 29:         smLoop();
 [e ( _smLoop ..  ]
-"31
-[; ;main.c: 31:     }
+"30
+[; ;main.c: 30:     }
 }
 [e $U 277  ]
 [e :U 278 ]
 }
-"34
-[; ;main.c: 34: }
+"33
+[; ;main.c: 33: }
 [e :UE 276 ]
 }

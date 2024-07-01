@@ -23,7 +23,6 @@ void main(void) {
     for (;;) {      
         //infraestrutura da placa
 
-        
         kpDebounce();
         
         //m?quina de estados

@@ -5502,7 +5502,7 @@ void kpDebounce(void) {
 
     if (teclaOld == teclaNew) tempo--;
     else {
-        tempo = 10;
+        tempo = 1;
         teclaOld = teclaNew;
     }
 

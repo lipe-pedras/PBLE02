@@ -4397,21 +4397,33 @@ unsigned int eventRead(void);
 # 11 "./var.h"
 void varInit(void);
 
+int getLevel(void);
+void updateLevel(void);
 char getState(void);
 void setState(char newState);
-int getTime(void);
-void setTime(int newTime);
-int getAlarmLevel(void);
-void setAlarmLevel(int newAlarmLevel);
+char getSEC();
+void setSEC(char value);
+char getMIN();
+void setMIN(char value);
+char getHOUR();
+void setHOUR(char value);
+int getAlarmLowerLevel(void);
+void setAlarmLowerLevel(int newAlarmLevel);
+int getAlarmUpperLevel(void);
+void setAlarmUpperLevel(int newAlarmLevel);
 char getLanguage(void);
 void setLanguage(char newLanguage);
 # 7 "main.c" 2
 # 1 "./stateMachine.h" 1
 # 14 "./stateMachine.h"
 enum {
-    STATE_ALARME,
-    STATE_TEMPO,
+    STATE_ALARM_UPPER,
+    STATE_ALARM_LOWER,
+    STATE_HOUR,
+    STATE_MIN,
+    STATE_SEC,
     STATE_IDIOMA,
+    STATE_OVER_LIMIT,
     STATE_FIM
 };
 
@@ -4420,13 +4432,16 @@ void smInit(void);
 void smLoop(void);
 # 8 "main.c" 2
 # 1 "./output.h" 1
-# 10 "./output.h"
+# 11 "./output.h"
 void outputInit(void);
 void outputPrint(int numTela, int idioma);
 # 9 "main.c" 2
 # 1 "./serial.h" 1
 # 23 "./serial.h"
  void serialSend(unsigned char c);
+    void serialSendString(const char *str);
+    void intToStr(int value, char *buffer);
+    void serialSendInt(int value);
  unsigned char serialRead(void);
  void serialInit(void);
 # 10 "main.c" 2
@@ -4444,7 +4459,6 @@ void main(void) {
 
 
     for (;;) {
-
 
 
         kpDebounce();

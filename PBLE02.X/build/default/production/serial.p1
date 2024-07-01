@@ -462,80 +462,252 @@ Version 4.0 HI-TECH Software Intermediate Code
 [e :UE 276 ]
 }
 "33
-[; ;serial.c: 33: unsigned char serialRead(void) {
+[; ;serial.c: 33: void serialSendString(const char *str) {
+[v _serialSendString `(v ~T0 @X0 1 ef1`*Cuc ]
+{
+[e :U _serialSendString ]
+[v _str `*Cuc ~T0 @X0 1 r1 ]
+[f ]
+"34
+[; ;serial.c: 34:     while (*str) {
+[e $U 281  ]
+[e :U 282 ]
+{
+"35
+[; ;serial.c: 35:         serialSend(*str++);
+[e ( _serialSend (1 -> *U ++ _str * -> -> 1 `i `x -> -> # *U _str `i `x `uc ]
+"36
+[; ;serial.c: 36:     }
+}
+[e :U 281 ]
+"34
+[; ;serial.c: 34:     while (*str) {
+[e $ != -> *U _str `i -> 0 `i 282  ]
+[e :U 283 ]
+"37
+[; ;serial.c: 37: }
+[e :UE 280 ]
+}
+"39
+[; ;serial.c: 39: void intToStr(int value, char *buffer) {
+[v _intToStr `(v ~T0 @X0 1 ef2`i`*uc ]
+{
+[e :U _intToStr ]
+[v _value `i ~T0 @X0 1 r1 ]
+[v _buffer `*uc ~T0 @X0 1 r2 ]
+[f ]
+"40
+[; ;serial.c: 40:     int i = 0;
+[v _i `i ~T0 @X0 1 a ]
+[e = _i -> 0 `i ]
+"41
+[; ;serial.c: 41:     int isNegative = 0;
+[v _isNegative `i ~T0 @X0 1 a ]
+[e = _isNegative -> 0 `i ]
+"44
+[; ;serial.c: 44:     if (value == 0) {
+[e $ ! == _value -> 0 `i 285  ]
+{
+"45
+[; ;serial.c: 45:         buffer[i++] = '0';
+[e = *U + _buffer * -> ++ _i -> 1 `i `x -> -> # *U _buffer `i `x -> -> 48 `ui `uc ]
+"46
+[; ;serial.c: 46:         buffer[i] = '\0';
+[e = *U + _buffer * -> _i `x -> -> # *U _buffer `i `x -> -> 0 `ui `uc ]
+"47
+[; ;serial.c: 47:         return;
+[e $UE 284  ]
+"48
+[; ;serial.c: 48:     }
+}
+[e :U 285 ]
+"51
+[; ;serial.c: 51:     if (value < 0) {
+[e $ ! < _value -> 0 `i 286  ]
+{
+"52
+[; ;serial.c: 52:         isNegative = 1;
+[e = _isNegative -> 1 `i ]
+"53
+[; ;serial.c: 53:         value = -value;
+[e = _value -U _value ]
+"54
+[; ;serial.c: 54:     }
+}
+[e :U 286 ]
+"57
+[; ;serial.c: 57:     while (value != 0) {
+[e $U 287  ]
+[e :U 288 ]
+{
+"58
+[; ;serial.c: 58:         int digit = value % 10;
+[v _digit `i ~T0 @X0 1 a ]
+[e = _digit % _value -> 10 `i ]
+"59
+[; ;serial.c: 59:         buffer[i++] = digit + '0';
+[e = *U + _buffer * -> ++ _i -> 1 `i `x -> -> # *U _buffer `i `x -> + -> _digit `ui -> 48 `ui `uc ]
+"60
+[; ;serial.c: 60:         value = value / 10;
+[e = _value / _value -> 10 `i ]
+"61
+[; ;serial.c: 61:     }
+}
+[e :U 287 ]
+"57
+[; ;serial.c: 57:     while (value != 0) {
+[e $ != _value -> 0 `i 288  ]
+[e :U 289 ]
+"64
+[; ;serial.c: 64:     if (isNegative) {
+[e $ ! != _isNegative -> 0 `i 290  ]
+{
+"65
+[; ;serial.c: 65:         buffer[i++] = '-';
+[e = *U + _buffer * -> ++ _i -> 1 `i `x -> -> # *U _buffer `i `x -> -> 45 `ui `uc ]
+"66
+[; ;serial.c: 66:     }
+}
+[e :U 290 ]
+"68
+[; ;serial.c: 68:     buffer[i] = '\0';
+[e = *U + _buffer * -> _i `x -> -> # *U _buffer `i `x -> -> 0 `ui `uc ]
+"71
+[; ;serial.c: 71:     int start = 0;
+[v _start `i ~T0 @X0 1 a ]
+[e = _start -> 0 `i ]
+"72
+[; ;serial.c: 72:     int end = i - 1;
+[v _end `i ~T0 @X0 1 a ]
+[e = _end - _i -> 1 `i ]
+"73
+[; ;serial.c: 73:     while (start < end) {
+[e $U 291  ]
+[e :U 292 ]
+{
+"74
+[; ;serial.c: 74:         char temp = buffer[start];
+[v _temp `uc ~T0 @X0 1 a ]
+[e = _temp *U + _buffer * -> _start `x -> -> # *U _buffer `i `x ]
+"75
+[; ;serial.c: 75:         buffer[start] = buffer[end];
+[e = *U + _buffer * -> _start `x -> -> # *U _buffer `i `x *U + _buffer * -> _end `x -> -> # *U _buffer `i `x ]
+"76
+[; ;serial.c: 76:         buffer[end] = temp;
+[e = *U + _buffer * -> _end `x -> -> # *U _buffer `i `x _temp ]
+"77
+[; ;serial.c: 77:         start++;
+[e ++ _start -> 1 `i ]
+"78
+[; ;serial.c: 78:         end--;
+[e -- _end -> 1 `i ]
+"79
+[; ;serial.c: 79:     }
+}
+[e :U 291 ]
+"73
+[; ;serial.c: 73:     while (start < end) {
+[e $ < _start _end 292  ]
+[e :U 293 ]
+"80
+[; ;serial.c: 80: }
+[e :UE 284 ]
+}
+"82
+[; ;serial.c: 82: void serialSendInt(int value) {
+[v _serialSendInt `(v ~T0 @X0 1 ef1`i ]
+{
+[e :U _serialSendInt ]
+[v _value `i ~T0 @X0 1 r1 ]
+[f ]
+"83
+[; ;serial.c: 83:     char buffer[12];
+[v _buffer `uc ~T0 @X0 -> 12 `i a ]
+"84
+[; ;serial.c: 84:     intToStr(value, buffer);
+[e ( _intToStr (2 , _value &U _buffer ]
+"85
+[; ;serial.c: 85:     serialSendString(buffer);
+[e ( _serialSendString (1 -> &U _buffer `*Cuc ]
+"86
+[; ;serial.c: 86: }
+[e :UE 294 ]
+}
+"88
+[; ;serial.c: 88: unsigned char serialRead(void) {
 [v _serialRead `(uc ~T0 @X0 1 ef ]
 {
 [e :U _serialRead ]
 [f ]
-"34
-[; ;serial.c: 34:     char resp = 0;
+"89
+[; ;serial.c: 89:     char resp = 0;
 [v _resp `uc ~T0 @X0 1 a ]
 [e = _resp -> -> 0 `i `uc ]
-"36
-[; ;serial.c: 36:     if (((RCSTA) & (1<<1)))
-[e $ ! != & -> _RCSTA `i << -> 1 `i -> 1 `i -> 0 `i 281  ]
-"37
-[; ;serial.c: 37:     {
+"91
+[; ;serial.c: 91:     if (((RCSTA) & (1<<1)))
+[e $ ! != & -> _RCSTA `i << -> 1 `i -> 1 `i -> 0 `i 296  ]
+"92
+[; ;serial.c: 92:     {
 {
-"38
-[; ;serial.c: 38:         ((RCSTA) &= ~(1<<4));
+"93
+[; ;serial.c: 93:         ((RCSTA) &= ~(1<<4));
 [e =& _RCSTA -> ~ << -> 1 `i -> 4 `i `Vuc ]
-"39
-[; ;serial.c: 39:         ((RCSTA) |= (1<<4));
+"94
+[; ;serial.c: 94:         ((RCSTA) |= (1<<4));
 [e =| _RCSTA -> << -> 1 `i -> 4 `i `Vuc ]
-"40
-[; ;serial.c: 40:     }
+"95
+[; ;serial.c: 95:     }
 }
-[e :U 281 ]
-"42
-[; ;serial.c: 42:     if (((PIR1) & (1<<5)))
-[e $ ! != & -> _PIR1 `i << -> 1 `i -> 5 `i -> 0 `i 282  ]
-"43
-[; ;serial.c: 43:     {
+[e :U 296 ]
+"97
+[; ;serial.c: 97:     if (((PIR1) & (1<<5)))
+[e $ ! != & -> _PIR1 `i << -> 1 `i -> 5 `i -> 0 `i 297  ]
+"98
+[; ;serial.c: 98:     {
 {
-"44
-[; ;serial.c: 44:         resp = RCREG;
+"99
+[; ;serial.c: 99:         resp = RCREG;
 [e = _resp -> _RCREG `uc ]
-"45
-[; ;serial.c: 45:     }
+"100
+[; ;serial.c: 100:     }
 }
-[e :U 282 ]
-"46
-[; ;serial.c: 46:     return resp;
+[e :U 297 ]
+"101
+[; ;serial.c: 101:     return resp;
 [e ) -> _resp `uc ]
-[e $UE 280  ]
-"49
-[; ;serial.c: 49: }
-[e :UE 280 ]
+[e $UE 295  ]
+"104
+[; ;serial.c: 104: }
+[e :UE 295 ]
 }
-"51
-[; ;serial.c: 51: void serialInit(void) {
+"106
+[; ;serial.c: 106: void serialInit(void) {
 [v _serialInit `(v ~T0 @X0 1 ef ]
 {
 [e :U _serialInit ]
 [f ]
-"52
-[; ;serial.c: 52:     TXSTA = 0b00101100;
+"107
+[; ;serial.c: 107:     TXSTA = 0b00101100;
 [e = _TXSTA -> -> 44 `i `uc ]
-"53
-[; ;serial.c: 53:     RCSTA = 0b10010000;
+"108
+[; ;serial.c: 108:     RCSTA = 0b10010000;
 [e = _RCSTA -> -> 144 `i `uc ]
-"54
-[; ;serial.c: 54:     BAUDCON = 0b00001000;
+"109
+[; ;serial.c: 109:     BAUDCON = 0b00001000;
 [e = _BAUDCON -> -> 8 `i `uc ]
-"55
-[; ;serial.c: 55:     SPBRGH = 0b00000000;
+"110
+[; ;serial.c: 110:     SPBRGH = 0b00000000;
 [e = _SPBRGH -> -> 0 `i `uc ]
-"56
-[; ;serial.c: 56:     SPBRG = 0b00100010;
+"111
+[; ;serial.c: 111:     SPBRG = 0b00100010;
 [e = _SPBRG -> -> 34 `i `uc ]
-"57
-[; ;serial.c: 57:     ((TRISC) |= (1<<6));
+"112
+[; ;serial.c: 112:     ((TRISC) |= (1<<6));
 [e =| _TRISC -> << -> 1 `i -> 6 `i `Vuc ]
-"58
-[; ;serial.c: 58:     ((TRISC) |= (1<<7));
+"113
+[; ;serial.c: 113:     ((TRISC) |= (1<<7));
 [e =| _TRISC -> << -> 1 `i -> 7 `i `Vuc ]
-"59
-[; ;serial.c: 59: }
-[e :UE 283 ]
+"114
+[; ;serial.c: 114: }
+[e :UE 298 ]
 }

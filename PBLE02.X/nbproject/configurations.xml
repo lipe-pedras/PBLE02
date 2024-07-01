@@ -40,6 +40,7 @@
       <itemPath>output.h</itemPath>
       <itemPath>var.c</itemPath>
       <itemPath>var.h</itemPath>
+      <itemPath>adc.c</itemPath>
     </logicalFolder>
   </logicalFolder>
   <sourceRootList>
